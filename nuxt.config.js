@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import firebase from '@nuxtjs/firebase'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode

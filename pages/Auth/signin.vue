@@ -7,43 +7,41 @@
         <v-card-text>
           <v-form>
             <v-text-field
-              v-model="auth.email"
               label="Login"
               name="login"
               prepend-icon="mdi-account"
-              type="text"             
+              type="text"
+              v-model="auth.email"
             ></v-text-field>
 
             <v-text-field
-              v-model="auth.password"
               label="Password"
               name="password"
               prepend-icon="mdi-lock"
               type="password"
-              
+              v-model="auth.password"
             ></v-text-field>
           </v-form>
         </v-card-text>
         <v-card-actions class="text-center">
           <v-btn
             class="login-button"
+            @click="login"
             depressed
             large
-            @click="login"
-            >Login</v-btn>
-          <v-btn class="reset-button" depressed large @click="forgotPassword" 
+            >Login</v-btn
+          >
+          <v-btn class="reset-button" @click="forgotPassword" depressed large
             >Forgot Password</v-btn
           >
         </v-card-actions>
       </v-card>
-      <v-snackbar        
-        :timeout="4000"   
-        v-model="snackbar"    
+      <v-snackbar
+        :timeout="4000"
+        v-model="snackbar"
         absolute
         bottom
-        color="success"
-        outlined
-        right
+        center
       >
         {{ snackbarText }}
       </v-snackbar>
@@ -51,9 +49,8 @@
   </v-row>
 </template>
 
-
 <script>
-export default{
+export default {
   data() {
     return {
       snackbar: false,
@@ -64,22 +61,34 @@ export default{
       }
     }
   },
-
-  methoods: {
+  methods: {
     login() {
-        let that = this
-        this.$fire.auth.signInWithEmailAndPassword(this.auth.email, this.auth.password)
-        .catch(function (error){
+      let that = this
+      this.$fire.auth.signInWithEmailAndPassword(this.auth.email, this.auth.password)
+      .catch(function (error){
         that.snackbarText = error.message
         that.snackbar = true
-        }).then((user) => {
-            that.$router.push('/')
-        })
-    }, 
-    fotgotPassword(){
-
+      }).then((user) => {
+        //we are signed in
+        $nuxt.$router.push('/')
+      })
+    },
+    forgotPassword() {
+      let that = this
+      this.$fire.auth.sendPasswordResetEmail(this.auth.email)
+      .then(function (){
+        that.snackbarText = 'reset link sent to ' + that.auth.email
+        that.snackbar = true
+      })
+      .catch(function (error) {
+        that.snackbarText = error.message
+        that.snackbar = true
+      })
     }
   }
-
 }
 </script>
+
+<style>
+
+</style>
